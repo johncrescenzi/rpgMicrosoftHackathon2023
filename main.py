@@ -6,9 +6,12 @@ from pygame.locals import *
 pygame.display.set_caption("Casus")
 pygame.display.init()
 pygame.mixer.init()
-pygame.display.set_gamma(1.0)
 
 ANIMATION_SPEED = 10
+# Set the display mode
+SCREEN_WIDTH = 1200
+SCREEN_HEIGHT = 800
+screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT))
 
 class Character(pygame.sprite.Sprite):
     def __init__(self, health, mana, attack, magic, defense, agility, statPoints, experience, x, y, width, height):
@@ -26,10 +29,77 @@ class Character(pygame.sprite.Sprite):
         self.width = width
         self.height = height
 
+        # Load the character image
+        self.image = pygame.image.load('assets/characters/Fallen_Angels_1/PNG/IdleBlinking/frame0.png').convert_alpha()
+        self.image = pygame.transform.scale(self.image, (self.width, self.height))
+        self.rect = self.image.get_rect()
+        self.rect.x = self.x
+        self.rect.y = self.y
+
+        # Set initial velocity
+        self.vx = 0
+        self.vy = 0
+
+        # Set jumping variables
+        self.is_jumping = False
+        self.jump_vel = -10
+        self.jump_time = 0
+
+        # Set screen width and height
+        self.screen_width = SCREEN_WIDTH
+        self.screen_height = SCREEN_HEIGHT
+
+    def update(self):
+        # Apply gravity
+        self.vy += 0.5
+
+        # Move horizontally
+        self.rect.x += self.vx
+
+        # Check for collision with walls
+        if self.rect.left < 0:
+            self.rect.left = 0
+        elif self.rect.right > self.screen_width:
+            self.rect.right = self.screen_width
+
+        # Move vertically (for jumping)
+        if self.is_jumping:
+            self.jump_time += 1
+            if self.jump_time > 20:
+                self.is_jumping = False
+                self.jump_time = 0
+            else:
+                self.rect.y += self.jump_vel
+
+        # Move vertically (for gravity)
+        self.rect.y += self.vy
+
+        # Check for collision with ground
+        if self.rect.bottom >= self.screen_height:
+            self.rect.bottom = self.screen_height
+            self.is_jumping = False
+            self.vy = 0
+
+    def jump(self):
+        if not self.is_jumping:
+            self.is_jumping = True
+            self.jump_vel = -10
+            self.jump_time = 0
+
+    def move_left(self):
+        self.vx = -5
+
+    def move_right(self):
+        self.vx = 5
+
+    def stop(self):
+            self.vx = 0
+
 # Initialize the character and give them 2 points to put into stats
-character = Character(100, 100, 0, 0, 1, 1, 2, 0, 0, 0, 0, 0)
+character = Character(100, 100, 0, 0, 1, 1, 2, 0, 0, 0, 0, 0) 
+
 class GameState:
-    def __init__(self, screen_width, screen_height):
+    def __init__(self, screen_width, screen_height, character):
         self.current_screen = "title"
         self.bg_images = [pygame.image.load(f"assets/title/titleFrame{i}.jpg").convert() for i in range(0, 8)]
         self.bg_index = 0
@@ -37,14 +107,20 @@ class GameState:
         self.bg_rect = self.bg_image.get_rect(center=(screen_width/2, screen_height/2))
         self.screen_width = screen_width
         self.screen_height = screen_height
-        self.game_counter = 0 
+        self.game_counter = 0
+        self.character = character
 
     def handle_event(self, event):
-        print(event)
-        print(self.current_screen)
         if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_s and self.current_screen == "character_selection":
-                powerPoints -= 1             
+            if event.key == pygame.K_LEFT:
+                self.character.move_left()
+            elif event.key == pygame.K_RIGHT:
+                self.character.move_right()
+            elif event.key == pygame.K_UP:
+                self.character.jump()
+            elif event.key == pygame.K_ESCAPE:
+                print("quit")
+                pygame.quit()
             elif event.key == pygame.K_SPACE:
                 if self.current_screen == "title":
                     self.current_screen = "character_selection"
@@ -52,14 +128,13 @@ class GameState:
                     self.current_screen = "stats"
                 elif self.current_screen == "stats":
                     self.current_screen = "forest1"
-            elif event.key == pygame.K_ESCAPE:
-                print("quit")
-                pygame.quit()
+        elif event.type == pygame.KEYUP:
+            if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
+                self.character.stop()
         elif event.type == pygame.QUIT:
             print("quit")
             pygame.quit()
             sys.exit()
-
     def update(self):
         # Update background image every 60 frames
         if self.current_screen == "title":
@@ -102,7 +177,7 @@ class GameState:
             overlay_y = (self.screen_height - overlay_image.get_rect().height) / 2 
             screen.blit(overlay_image, (overlay_x, overlay_y))
 
-           # Load banner image and scale it
+            # Load banner image and scale it
             banner_image = pygame.image.load("assets/banner.png").convert_alpha()
             banner_image = pygame.transform.scale(banner_image, (int(banner_image.get_rect().width / 1.1), int(banner_image.get_rect().height / 1.1)))
 
@@ -161,7 +236,7 @@ class GameState:
 
         elif self.current_screen == "stats":
 
-             # Load overlay image and center it on the screen
+            # Load overlay image and center it on the screen
             overlayStats_image = pygame.image.load("assets/woodenOverlayStats.png").convert_alpha()
             overlayStats_x = (self.screen_width - overlayStats_image.get_rect().width) / 2
             overlayStats_y = (self.screen_height - overlayStats_image.get_rect().height) / 2 
@@ -399,7 +474,7 @@ class GameState:
             forest1_y = (self.screen_height - forest1_image.get_rect().height) / 2 
             screen.blit(forest1_image, (forest1_x, forest1_y))
 
-             # Load and scale the character image
+            # Load and scale the character image
             character1_image = pygame.image.load("assets/characters/Fallen_Angels_1/PNG/IdleBlinking/frame0.png").convert_alpha()
             character1_image = pygame.transform.scale(character1_image, (int(character1_image.get_rect().width/2.75), int(character1_image.get_rect().height/2.75)))
 
@@ -407,29 +482,68 @@ class GameState:
             character1_x = (self.screen_width  - character1_image.get_rect().width) / 2
             character1_y = (self.screen_height - character1_image.get_rect().height) / 2 
             screen.blit(character1_image, (character1_x, character1_y))
+
+            def run_game(self):
+                while True:
+                    # Handle events
+                    for event in pygame.event.get():
+                        self.handle_event(event)
+
+                    # Update game objects
+                    self.character.update()
+
+                    # Draw the current screen
+                    self.draw_screen()
+
+                    # Update the display
+                    pygame.display.update()
+
+            
+
+
 class Game:
     def __init__(self):
         screen_width = 1200
         screen_height = 800
         pygame.init()
         self.screen = pygame.display.set_mode((screen_width, screen_height))
-        self.game_state = GameState(screen_width, screen_height)  # Create a GameState instance
+        self.character = character
+        self.game_state = GameState(screen_width, screen_height, self.character)  # Pass the character instance to GameState
         self.clock = pygame.time.Clock()
 
     def run(self):
+        # Handle events
+        for event in pygame.event.get():
+            self.game_state.handle_event(event)
+
+        # Update game state
+        self.game_state.update()
+
+        # Update character
+        self.character.update()
+
+        # Draw background
+        self.screen.blit(self.game_state.bg_image, self.game_state.bg_rect)
+
+        # Draw character
+        self.screen.blit(self.character.image, self.character.rect)
+
+        # Update display
+        pygame.display.update()
+
+        # Wait for next frame
+        self.clock.tick(60)
+
+        game_state = GameState(SCREEN_WIDTH, SCREEN_HEIGHT, character)
         while True:
-            # Handle events
             for event in pygame.event.get():
-                self.game_state.handle_event(event)
+                game_state.handle_event(event)
 
-            # Update game state
-            self.game_state.update()
+            screen.blit(game_state.bg_image, game_state.bg_rect)
+            game_state.render(screen)
 
-            self.game_state.update()
-            self.game_state.render(self.screen)
+            pygame.display.flip()
 
-            pygame.display.update()
-            self.clock.tick(60)
 game = Game()
 game.run()
 
@@ -443,7 +557,7 @@ class EnemySpawner:
     def __init__(self, game_state):
         self.game_state = game_state
         self.enemy_types = ["orc", "minotaur", "reaper"]
-        
+            
     def spawn_enemy(self):
         enemy_type = random.choice(self.enemy_types)
         if enemy_type == "orc":
