@@ -10,20 +10,24 @@ pygame.display.set_gamma(1.0)
 
 ANIMATION_SPEED = 10
 
-agility = 1
-
 class Character(pygame.sprite.Sprite):
-    def __init__(self, health, mana, strength, magic, defense, agility, powerPoints, experience):
+    def __init__(self, health, mana, attack, magic, defense, agility, statPoints, experience, x, y, width, height):
         super().__init__()
         self.health = health
         self.mana = mana
-        self.strength = strength
+        self.attack = attack
         self.magic = magic
         self.defense = defense
         self.agility = agility
-        self.powerPoints = powerPoints
+        self.powerPoints = statPoints
         self.experience = experience
+        self.x = x
+        self.y = y
+        self.width = width
+        self.height = height
 
+# Initialize the character and give them 2 points to put into stats
+character = Character(100, 100, 0, 0, 1, 1, 2, 0, 0, 0, 0, 0)
 class GameState:
     def __init__(self, screen_width, screen_height):
         self.current_screen = "title"
@@ -74,7 +78,6 @@ class GameState:
     def render(self, screen):
         self.update()  # Call update every frame
         if self.current_screen == "title":
-
             # Calculate the position of the background image to center it on the screen
             bg_x = (self.screen_width - self.bg_rect.width) / 2
             bg_y = (self.screen_height - self.bg_rect.height) / 2
@@ -151,7 +154,7 @@ class GameState:
             screen.blit(squareButton_image, (squareButton_x, squareButton_y))
 
             # Add text to the button
-            button_text = font.render("Select", True, (255, 255, 255))
+            button_text = font.render("Select (space)", True, (255, 255, 255))
             button_text_rect = button_text.get_rect(center=(self.screen_width/2, squareButton_y + squareButton_image.get_rect().height/2))
             screen.blit(button_text, button_text_rect)
 
@@ -165,7 +168,7 @@ class GameState:
             screen.blit(overlayStats_image, (overlayStats_x, overlayStats_y))
 
             #Agility
-            if agility == 0:
+            if character.agility == 0:
                 # Load bar0 and scale it
                 bar0_image = pygame.image.load("assets/bar0.png").convert_alpha()
                 bar0_image = pygame.transform.scale(bar0_image, (int(bar0_image.get_rect().width / 2.25), int(bar0_image.get_rect().height / 2.25)))
@@ -174,7 +177,7 @@ class GameState:
                 bar0_x = (self.screen_width - bar0_image.get_rect().width) * 1.25 / 2
                 bar0_y = self.screen_height * 0.775 - bar0_image.get_rect().height / 2 
                 screen.blit(bar0_image, (bar0_x, bar0_y))
-            elif agility == 1:
+            elif character.agility == 1:
                 # Load bar1 and scale it
                 bar1_image = pygame.image.load("assets/bar1.png").convert_alpha()
                 bar1_image = pygame.transform.scale(bar1_image, (int(bar1_image.get_rect().width / 2.25), int(bar1_image.get_rect().height / 2.25)))
@@ -183,7 +186,45 @@ class GameState:
                 bar1_x = (self.screen_width - bar1_image.get_rect().width) * 1.25 / 2
                 bar1_y = self.screen_height * 0.775 - bar1_image.get_rect().height / 2 
                 screen.blit(bar1_image, (bar1_x, bar1_y))
+            elif character.agility == 2:
+                # Load bar2 and scale it
+                bar1_image = pygame.image.load("assets/bar2.png").convert_alpha()
+                bar1_image = pygame.transform.scale(bar1_image, (int(bar1_image.get_rect().width / 2.25), int(bar1_image.get_rect().height / 2.25)))
 
+                # Place the bar2 image centered horizontally and towards the bottom vertically
+                bar1_x = (self.screen_width - bar1_image.get_rect().width) * 1.25 / 2
+                bar1_y = self.screen_height * 0.775 - bar1_image.get_rect().height / 2 
+                screen.blit(bar1_image, (bar1_x, bar1_y))
+            elif character.agility == 3:
+                # Load bar3 and scale it
+                bar1_image = pygame.image.load("assets/bar3.png").convert_alpha()
+                bar1_image = pygame.transform.scale(bar1_image, (int(bar1_image.get_rect().width / 2.25), int(bar1_image.get_rect().height / 2.25)))
+
+                # Place the bar3 image centered horizontally and towards the bottom vertically
+                bar1_x = (self.screen_width - bar1_image.get_rect().width) * 1.25 / 2
+                bar1_y = self.screen_height * 0.775 - bar1_image.get_rect().height / 2 
+                screen.blit(bar1_image, (bar1_x, bar1_y))
+            elif character.agility == 4:
+                # Load bar4 and scale it
+                bar1_image = pygame.image.load("assets/bar4.png").convert_alpha()
+                bar1_image = pygame.transform.scale(bar1_image, (int(bar1_image.get_rect().width / 2.25), int(bar1_image.get_rect().height / 2.25)))
+
+                # Place the bar4 image centered horizontally and towards the bottom vertically
+                bar1_x = (self.screen_width - bar1_image.get_rect().width) * 1.25 / 2
+                bar1_y = self.screen_height * 0.775 - bar1_image.get_rect().height / 2 
+                screen.blit(bar1_image, (bar1_x, bar1_y))
+            elif character.agility == 5:
+                # Load bar5 and scale it
+                bar1_image = pygame.image.load("assets/bar5.png").convert_alpha()
+                bar1_image = pygame.transform.scale(bar1_image, (int(bar1_image.get_rect().width / 2.25), int(bar1_image.get_rect().height / 2.25)))
+
+                # Place the bar5 image centered horizontally and towards the bottom vertically
+                bar1_x = (self.screen_width - bar1_image.get_rect().width) * 1.25 / 2
+                bar1_y = self.screen_height * 0.775 - bar1_image.get_rect().height / 2 
+                screen.blit(bar1_image, (bar1_x, bar1_y))
+
+            #Defense
+            if character.defense == 0:
                 # Load bar0 and scale it
                 bar0_image = pygame.image.load("assets/bar0.png").convert_alpha()
                 bar0_image = pygame.transform.scale(bar0_image, (int(bar0_image.get_rect().width / 2.25), int(bar0_image.get_rect().height / 2.25)))
@@ -192,7 +233,54 @@ class GameState:
                 bar0_x = (self.screen_width - bar0_image.get_rect().width) * 1.25 / 2
                 bar0_y = self.screen_height * 0.575 - bar0_image.get_rect().height / 2 
                 screen.blit(bar0_image, (bar0_x, bar0_y))
+            elif character.defense == 1:
+                # Load bar1 and scale it
+                bar1_image = pygame.image.load("assets/bar1.png").convert_alpha()
+                bar1_image = pygame.transform.scale(bar1_image, (int(bar1_image.get_rect().width / 2.25), int(bar1_image.get_rect().height / 2.25)))
 
+                # Place the bar1 image centered horizontally and towards the bottom vertically
+                bar1_x = (self.screen_width - bar1_image.get_rect().width) * 1.25 / 2
+                bar1_y = self.screen_height * 0.575 - bar1_image.get_rect().height / 2 
+                screen.blit(bar1_image, (bar1_x, bar1_y))
+            elif character.defense == 2:
+                # Load bar2 and scale it
+                bar1_image = pygame.image.load("assets/bar2.png").convert_alpha()
+                bar1_image = pygame.transform.scale(bar1_image, (int(bar1_image.get_rect().width / 2.25), int(bar1_image.get_rect().height / 2.25)))
+
+                # Place the bar2 image centered horizontally and towards the bottom vertically
+                bar1_x = (self.screen_width - bar1_image.get_rect().width) * 1.25 / 2
+                bar1_y = self.screen_height * 0.575 - bar1_image.get_rect().height / 2 
+                screen.blit(bar1_image, (bar1_x, bar1_y))
+            elif character.defense == 3:
+                # Load bar3 and scale it
+                bar1_image = pygame.image.load("assets/bar3.png").convert_alpha()
+                bar1_image = pygame.transform.scale(bar1_image, (int(bar1_image.get_rect().width / 2.25), int(bar1_image.get_rect().height / 2.25)))
+
+                # Place the bar3 image centered horizontally and towards the bottom vertically
+                bar1_x = (self.screen_width - bar1_image.get_rect().width) * 1.25 / 2
+                bar1_y = self.screen_height * 0.575 - bar1_image.get_rect().height / 2 
+                screen.blit(bar1_image, (bar1_x, bar1_y))
+            elif character.defense == 4:
+                # Load bar4 and scale it
+                bar1_image = pygame.image.load("assets/bar4.png").convert_alpha()
+                bar1_image = pygame.transform.scale(bar1_image, (int(bar1_image.get_rect().width / 2.25), int(bar1_image.get_rect().height / 2.25)))
+
+                # Place the bar4 image centered horizontally and towards the bottom vertically
+                bar1_x = (self.screen_width - bar1_image.get_rect().width) * 1.25 / 2
+                bar1_y = self.screen_height * 0.575 - bar1_image.get_rect().height / 2 
+                screen.blit(bar1_image, (bar1_x, bar1_y))
+            elif character.defense == 5:
+                # Load bar5 and scale it
+                bar1_image = pygame.image.load("assets/bar5.png").convert_alpha()
+                bar1_image = pygame.transform.scale(bar1_image, (int(bar1_image.get_rect().width / 2.25), int(bar1_image.get_rect().height / 2.25)))
+
+                # Place the bar5 image centered horizontally and towards the bottom vertically
+                bar1_x = (self.screen_width - bar1_image.get_rect().width) * 1.25 / 2
+                bar1_y = self.screen_height * 0.575 - bar1_image.get_rect().height / 2 
+                screen.blit(bar1_image, (bar1_x, bar1_y)) 
+
+            #Magic
+            if character.magic == 0:
                 # Load bar0 and scale it
                 bar0_image = pygame.image.load("assets/bar0.png").convert_alpha()
                 bar0_image = pygame.transform.scale(bar0_image, (int(bar0_image.get_rect().width / 2.25), int(bar0_image.get_rect().height / 2.25)))
@@ -201,7 +289,54 @@ class GameState:
                 bar0_x = (self.screen_width - bar0_image.get_rect().width) * 1.25 / 2
                 bar0_y = self.screen_height * 0.375 - bar0_image.get_rect().height / 2 
                 screen.blit(bar0_image, (bar0_x, bar0_y))
+            elif character.magic == 1:
+                # Load bar1 and scale it
+                bar1_image = pygame.image.load("assets/bar1.png").convert_alpha()
+                bar1_image = pygame.transform.scale(bar1_image, (int(bar1_image.get_rect().width / 2.25), int(bar1_image.get_rect().height / 2.25)))
 
+                # Place the bar1 image centered horizontally and towards the bottom vertically
+                bar1_x = (self.screen_width - bar1_image.get_rect().width) * 1.25 / 2
+                bar1_y = self.screen_height * 0.375 - bar1_image.get_rect().height / 2 
+                screen.blit(bar1_image, (bar1_x, bar1_y))
+            elif character.magic == 2:
+                # Load bar2 and scale it
+                bar1_image = pygame.image.load("assets/bar2.png").convert_alpha()
+                bar1_image = pygame.transform.scale(bar1_image, (int(bar1_image.get_rect().width / 2.25), int(bar1_image.get_rect().height / 2.25)))
+
+                # Place the bar2 image centered horizontally and towards the bottom vertically
+                bar1_x = (self.screen_width - bar1_image.get_rect().width) * 1.25 / 2
+                bar1_y = self.screen_height * 0.375 - bar1_image.get_rect().height / 2 
+                screen.blit(bar1_image, (bar1_x, bar1_y))
+            elif character.magic == 3:
+                # Load bar3 and scale it
+                bar1_image = pygame.image.load("assets/bar3.png").convert_alpha()
+                bar1_image = pygame.transform.scale(bar1_image, (int(bar1_image.get_rect().width / 2.25), int(bar1_image.get_rect().height / 2.25)))
+
+                # Place the bar3 image centered horizontally and towards the bottom vertically
+                bar1_x = (self.screen_width - bar1_image.get_rect().width) * 1.25 / 2
+                bar1_y = self.screen_height * 0.375 - bar1_image.get_rect().height / 2 
+                screen.blit(bar1_image, (bar1_x, bar1_y))
+            elif character.magic == 4:
+                # Load bar4 and scale it
+                bar1_image = pygame.image.load("assets/bar4.png").convert_alpha()
+                bar1_image = pygame.transform.scale(bar1_image, (int(bar1_image.get_rect().width / 2.25), int(bar1_image.get_rect().height / 2.25)))
+
+                # Place the bar4 image centered horizontally and towards the bottom vertically
+                bar1_x = (self.screen_width - bar1_image.get_rect().width) * 1.25 / 2
+                bar1_y = self.screen_height * 0.375 - bar1_image.get_rect().height / 2 
+                screen.blit(bar1_image, (bar1_x, bar1_y))
+            elif character.magic == 5:
+                # Load bar5 and scale it
+                bar1_image = pygame.image.load("assets/bar5.png").convert_alpha()
+                bar1_image = pygame.transform.scale(bar1_image, (int(bar1_image.get_rect().width / 2.25), int(bar1_image.get_rect().height / 2.25)))
+
+                # Place the bar5 image centered horizontally and towards the bottom vertically
+                bar1_x = (self.screen_width - bar1_image.get_rect().width) * 1.25 / 2
+                bar1_y = self.screen_height * 0.375 - bar1_image.get_rect().height / 2 
+                screen.blit(bar1_image, (bar1_x, bar1_y))             
+
+            #Attack
+            if character.attack == 0:
                 # Load bar0 and scale it
                 bar0_image = pygame.image.load("assets/bar0.png").convert_alpha()
                 bar0_image = pygame.transform.scale(bar0_image, (int(bar0_image.get_rect().width / 2.25), int(bar0_image.get_rect().height / 2.25)))
@@ -210,6 +345,52 @@ class GameState:
                 bar0_x = (self.screen_width - bar0_image.get_rect().width) * 1.25 / 2
                 bar0_y = self.screen_height * 0.175 - bar0_image.get_rect().height / 2 
                 screen.blit(bar0_image, (bar0_x, bar0_y))
+            elif character.attack == 1:
+                # Load bar1 and scale it
+                bar1_image = pygame.image.load("assets/bar1.png").convert_alpha()
+                bar1_image = pygame.transform.scale(bar1_image, (int(bar1_image.get_rect().width / 2.25), int(bar1_image.get_rect().height / 2.25)))
+
+                # Place the bar1 image centered horizontally and towards the bottom vertically
+                bar1_x = (self.screen_width - bar1_image.get_rect().width) * 1.25 / 2
+                bar1_y = self.screen_height * 0.175 - bar1_image.get_rect().height / 2 
+                screen.blit(bar1_image, (bar1_x, bar1_y))
+            elif character.attack == 2:
+                # Load bar2 and scale it
+                bar1_image = pygame.image.load("assets/bar2.png").convert_alpha()
+                bar1_image = pygame.transform.scale(bar1_image, (int(bar1_image.get_rect().width / 2.25), int(bar1_image.get_rect().height / 2.25)))
+
+                # Place the bar2 image centered horizontally and towards the bottom vertically
+                bar1_x = (self.screen_width - bar1_image.get_rect().width) * 1.25 / 2
+                bar1_y = self.screen_height * 0.175 - bar1_image.get_rect().height / 2 
+                screen.blit(bar1_image, (bar1_x, bar1_y))
+            elif character.attack == 3:
+                # Load bar3 and scale it
+                bar1_image = pygame.image.load("assets/bar3.png").convert_alpha()
+                bar1_image = pygame.transform.scale(bar1_image, (int(bar1_image.get_rect().width / 2.25), int(bar1_image.get_rect().height / 2.25)))
+
+                # Place the bar3 image centered horizontally and towards the bottom vertically
+                bar1_x = (self.screen_width - bar1_image.get_rect().width) * 1.25 / 2
+                bar1_y = self.screen_height * 0.175 - bar1_image.get_rect().height / 2 
+                screen.blit(bar1_image, (bar1_x, bar1_y))
+            elif character.attack == 4:
+                # Load bar4 and scale it
+                bar1_image = pygame.image.load("assets/bar4.png").convert_alpha()
+                bar1_image = pygame.transform.scale(bar1_image, (int(bar1_image.get_rect().width / 2.25), int(bar1_image.get_rect().height / 2.25)))
+
+                # Place the bar4 image centered horizontally and towards the bottom vertically
+                bar1_x = (self.screen_width - bar1_image.get_rect().width) * 1.25 / 2
+                bar1_y = self.screen_height * 0.175 - bar1_image.get_rect().height / 2 
+                screen.blit(bar1_image, (bar1_x, bar1_y))
+            elif character.attack == 5:
+                # Load bar5 and scale it
+                bar1_image = pygame.image.load("assets/bar5.png").convert_alpha()
+                bar1_image = pygame.transform.scale(bar1_image, (int(bar1_image.get_rect().width / 2.25), int(bar1_image.get_rect().height / 2.25)))
+
+                # Place the bar5 image centered horizontally and towards the bottom vertically
+                bar1_x = (self.screen_width - bar1_image.get_rect().width) * 1.25 / 2
+                bar1_y = self.screen_height * 0.175 - bar1_image.get_rect().height / 2 
+                screen.blit(bar1_image, (bar1_x, bar1_y))
+
 
         elif self.current_screen == "forest1":
             # Load overlay image and center it on the screen
@@ -226,9 +407,6 @@ class GameState:
             character1_x = (self.screen_width  - character1_image.get_rect().width) / 2
             character1_y = (self.screen_height - character1_image.get_rect().height) / 2 
             screen.blit(character1_image, (character1_x, character1_y))
-
-
-
 class Game:
     def __init__(self):
         screen_width = 1200
@@ -282,12 +460,3 @@ class EnemySpawner:
             enemy = Enemy("Reaper", health, strength)
         return enemy
   
-class Character(pygame.sprite.Sprite):
-    def __init__(self, health, mana, strength, magic, defense, agility):
-        super().__init__()
-        self.health = health
-        self.mana = mana
-        self.strength = strength
-        self.magic = magic
-        self.defense = defense
-        self.agility = agility
